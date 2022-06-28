@@ -1,0 +1,20 @@
+{
+	"name": "1_explore_taxi_zone",
+	"properties": {
+		"folder": {
+			"name": "nyc_taxi/discovery"
+		},
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://dlssynapserooz.dfs.core.windows.net/nyc-taxi-data/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true\n    ) AS [result]\n\n\n\n-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true,\n        FIELDTERMINATOR =',',\n        ROWTERMINATOR ='\\n'\n    ) AS [result]\n\n\nEXEC sp_describe_first_result_set N'\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK ''abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv'',\n        FORMAT = ''CSV'',\n        PARSER_VERSION = ''2.0'',\n        HEADER_ROW = true\n\n    ) AS [result]'\n\n\n-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true  ) \nWITH(\n\n     LocationID SMALLINT,\n     Borough varchar(15),\n     Zone VARCHAR (50),\n     service_zone VARCHAR(15)\n\n\n) AS [result]\n\n\nexec sp_describe_first_result_set N'SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK ''abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv'',\n        FORMAT = ''CSV'',\n        PARSER_VERSION = ''2.0'',\n        HEADER_ROW = true  ) \nWITH(\n\n     LocationID SMALLINT,\n     Borough varchar(15),\n     Zone VARCHAR (50),\n     service_zone VARCHAR(15)\n\n\n) AS [result]'\n\n\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true  ) \nWITH(\n\n     LocationID SMALLINT,\n     Borough varchar(15) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n     Zone VARCHAR (50) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n     service_zone VARCHAR(15) COLLATE Latin1_General_100_CI_AI_SC_UTF8\n\n) AS [result]\n\n\n\n\n\n\n\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
