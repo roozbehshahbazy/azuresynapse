@@ -11,6 +11,9 @@
 		"adls_for_deltalake_properties_typeProperties_url": {
 			"value": "https://dlssynapserooz.dfs.core.windows.net/"
 		},
+		"lnk_disclose_offer_list_properties_typeProperties_url": {
+			"value": "https://api.business.govt.nz/services/v2/companies-office/disclose-register/DisclosePublic"
+		},
 		"lnk_server_disclose_properties_typeProperties_url": {
 			"value": "https://api.business.govt.nz/services/v2/companies-office/disclose-register/DisclosePublic"
 		}
