@@ -228,12 +228,12 @@
 											}
 										},
 										"sink": {
-											"type": "JsonSink",
+											"type": "ParquetSink",
 											"storeSettings": {
 												"type": "AzureBlobFSWriteSettings"
 											},
 											"formatSettings": {
-												"type": "JsonWriteSettings"
+												"type": "ParquetWriteSettings"
 											}
 										},
 										"enableStaging": false
@@ -247,7 +247,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "ds_disclose_offers",
+											"referenceName": "ds_disclose_offers_parquet",
 											"type": "DatasetReference",
 											"parameters": {
 												"FileName": {
@@ -271,7 +271,7 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/ds_offer_list_for_lookup')]",
 				"[concat(variables('workspaceId'), '/datasets/ds_disclose')]",
-				"[concat(variables('workspaceId'), '/datasets/ds_disclose_offers')]"
+				"[concat(variables('workspaceId'), '/datasets/ds_disclose_offers_parquet')]"
 			]
 		},
 		{
@@ -376,6 +376,40 @@
 					}
 				},
 				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/adls_for_deltalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_disclose_offers_parquet')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adls_for_deltalake",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": "disclose_ingestion",
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/adls_for_deltalake')]"
