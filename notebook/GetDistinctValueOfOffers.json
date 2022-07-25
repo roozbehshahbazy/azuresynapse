@@ -4,20 +4,20 @@
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
-			"referenceName": "SparkCluster",
+			"referenceName": "MySparkCluster",
 			"type": "BigDataPoolReference"
 		},
 		"sessionProperties": {
-			"driverMemory": "56g",
-			"driverCores": 8,
-			"executorMemory": "56g",
-			"executorCores": 8,
+			"driverMemory": "224g",
+			"driverCores": 32,
+			"executorMemory": "224g",
+			"executorCores": 32,
 			"numExecutors": 2,
 			"conf": {
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "94b6fc34-970b-4866-b963-674900596577"
+				"spark.autotune.trackingId": "7dcaeff2-5a3d-4c24-be91-1acea509d97a"
 			}
 		},
 		"metadata": {
@@ -31,10 +31,10 @@
 				"name": "python"
 			},
 			"a365ComputeOptions": {
-				"id": "/subscriptions/134b824c-eec7-4134-b15d-9b182fe58f20/resourceGroups/intergen-metadata-driven-framework-deploytest-dev/providers/Microsoft.Synapse/workspaces/ws-synapse-rooz2/bigDataPools/SparkCluster",
-				"name": "SparkCluster",
+				"id": "/subscriptions/134b824c-eec7-4134-b15d-9b182fe58f20/resourceGroups/intergen-metadata-driven-framework-deploytest-dev/providers/Microsoft.Synapse/workspaces/ws-synapse-rooz2/bigDataPools/MySparkCluster",
+				"name": "MySparkCluster",
 				"type": "Spark",
-				"endpoint": "https://ws-synapse-rooz2.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkCluster",
+				"endpoint": "https://ws-synapse-rooz2.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/MySparkCluster",
 				"auth": {
 					"type": "AAD",
 					"authResource": "https://dev.azuresynapse.net"
