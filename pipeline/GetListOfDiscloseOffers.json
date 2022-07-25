@@ -83,7 +83,7 @@
 					},
 					"snapshot": true,
 					"sparkPool": {
-						"referenceName": "SparkCluster",
+						"referenceName": "MySparkCluster",
 						"type": "BigDataPoolReference"
 					}
 				}
