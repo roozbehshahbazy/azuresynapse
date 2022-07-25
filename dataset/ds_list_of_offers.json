@@ -1,0 +1,16 @@
+{
+	"name": "ds_list_of_offers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lnk_disclose_offer_list",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		}
+	}
+}
