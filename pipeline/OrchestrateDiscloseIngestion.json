@@ -1,0 +1,41 @@
+{
+	"name": "OrchestrateDiscloseIngestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetListOfOffers",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GetListOfDiscloseOffers",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Ingest",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "GetListOfOffers",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "IngestDiscloseData",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
