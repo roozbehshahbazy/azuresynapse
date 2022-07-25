@@ -99,6 +99,37 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Transform Offer List",
+						"type": "SynapseNotebook",
+						"dependsOn": [
+							{
+								"activity": "Copy List of Offers",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "GetDistinctValueOfOffers",
+								"type": "NotebookReference"
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "SparkCluster",
+								"type": "BigDataPoolReference"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -109,7 +140,9 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/ds_list_of_offers')]",
-				"[concat(variables('workspaceId'), '/datasets/ds_offer_list')]"
+				"[concat(variables('workspaceId'), '/datasets/ds_offer_list')]",
+				"[concat(variables('workspaceId'), '/notebooks/GetDistinctValueOfOffers')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/SparkCluster')]"
 			]
 		},
 		{
@@ -388,7 +421,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "6cf5ba12-35a9-4b13-8e6d-0baa14defd90"
+						"spark.autotune.trackingId": "94b6fc34-970b-4866-b963-674900596577"
 					}
 				},
 				"metadata": {
@@ -413,8 +446,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 10,
 						"cores": 32,
-						"memory": 224,
-						"automaticScaleJobs": false
+						"memory": 224
 					},
 					"sessionKeepAliveTimeout": 30
 				},
