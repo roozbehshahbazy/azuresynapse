@@ -106,7 +106,13 @@
 							"outputs": [
 								{
 									"referenceName": "ds_disclose_offers",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"FileName": {
+											"value": "@item().offer_number",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
