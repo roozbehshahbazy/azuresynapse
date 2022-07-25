@@ -1,0 +1,16 @@
+{
+	"name": "ds_disclose",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lnk_server_disclose",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		}
+	}
+}

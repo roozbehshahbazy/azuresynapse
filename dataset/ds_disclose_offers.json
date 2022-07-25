@@ -1,0 +1,19 @@
+{
+	"name": "ds_disclose_offers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adls_for_deltalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "disclose_ingestion",
+				"fileSystem": "raw"
+			}
+		},
+		"schema": {}
+	}
+}
