@@ -1,0 +1,23 @@
+{
+	"name": "lnk_disclose_offer_list",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://api.business.govt.nz/services/v2/companies-office/disclose-register/DisclosePublic",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"SOAPAction": {
+					"type": "SecureString",
+					"value": "**********"
+				},
+				"Content-Type": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		}
+	}
+}
