@@ -38,6 +38,15 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/MySparkCluster')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/GetListOfDiscloseOffers')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
@@ -126,7 +135,7 @@
 							},
 							"snapshot": true,
 							"sparkPool": {
-								"referenceName": "SparkCluster",
+								"referenceName": "MySparkCluster",
 								"type": "BigDataPoolReference"
 							}
 						}
@@ -142,7 +151,7 @@
 				"[concat(variables('workspaceId'), '/datasets/ds_list_of_offers')]",
 				"[concat(variables('workspaceId'), '/datasets/ds_offer_list')]",
 				"[concat(variables('workspaceId'), '/notebooks/GetDistinctValueOfOffers')]",
-				"[concat(variables('workspaceId'), '/bigDataPools/SparkCluster')]"
+				"[concat(variables('workspaceId'), '/bigDataPools/MySparkCluster')]"
 			]
 		},
 		{
@@ -714,6 +723,31 @@
 				"sparkVersion": "3.2",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": true,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "eastus2"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/MySparkCluster')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 5
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 3,
+					"minNodeCount": 3
+				},
+				"nodeCount": 10,
+				"nodeSize": "XLarge",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.2",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
 				"annotations": []
 			},
 			"dependsOn": [],
