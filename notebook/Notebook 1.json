@@ -1,0 +1,144 @@
+{
+	"name": "Notebook 1",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkCluster",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "6350f7b2-103f-43d0-a934-3b0454a69c12"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/134b824c-eec7-4134-b15d-9b182fe58f20/resourceGroups/intergen-metadata-driven-framework-deploytest-dev/providers/Microsoft.Synapse/workspaces/ws-synapse-rooz2/bigDataPools/SparkCluster",
+				"name": "SparkCluster",
+				"type": "Spark",
+				"endpoint": "https://ws-synapse-rooz2.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkCluster",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 10,
+				"cores": 32,
+				"memory": 224,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df = spark.read.load('abfss://raw@dlssynapserooz.dfs.core.windows.net/disclose_list_of_offers/7feb971e-804f-4aa6-9c0e-7303e6f0e2e9.json', format='json')"
+				],
+				"execution_count": 42
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql.functions import explode, col\r\n",
+					"offers = df.select(explode(\"SOAP-ENV:Envelope.SOAP-ENV:Body.get:GetNewOrChangedOffersAndSchemesResponse.get:Response.get:ChangeVersions.get:ChangeVersion\").alias(\"offers\")\r\n",
+					"\r\n",
+					",col(\"offers.get:OfferNumber\").alias(\"offer_number\")\r\n",
+					",col(\"offers.get:FilingType\").alias(\"filing_type\")\r\n",
+					",col(\"offers.get:EntityType\").alias(\"entity_type\")\r\n",
+					",col(\"offers.get:VersionDate\").alias(\"version_date\")\r\n",
+					",col(\"offers.get:VersionNumber\").alias(\"version_number\")\r\n",
+					"\r\n",
+					")\r\n",
+					"\r\n",
+					"\r\n",
+					""
+				],
+				"execution_count": 54
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"#create list of unique offers\r\n",
+					"\r\n",
+					"offer_list = offers.select('offer_number').distinct()\r\n",
+					"\r\n",
+					"\r\n",
+					"(offer_list.coalesce(1).write.format(\"com.databricks.spark.csv\")\r\n",
+					"    .option(\"header\", \"true\")\r\n",
+					"    .mode(\"overwrite\")\r\n",
+					"    .save(\"abfss://raw@dlssynapserooz.dfs.core.windows.net/offer_list\"))\r\n",
+					""
+				],
+				"execution_count": 61
+			}
+		]
+	}
+}
