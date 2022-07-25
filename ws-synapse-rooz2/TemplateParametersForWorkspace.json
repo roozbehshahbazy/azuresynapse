@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "ws-synapse-rooz2"
+		},
+		"adls_for_deltalake_accountKey": {
+			"value": ""
+		},
+		"adls_for_deltalake_properties_typeProperties_url": {
+			"value": "https://dlssynapserooz.dfs.core.windows.net/"
+		},
+		"lnk_server_disclose_properties_typeProperties_url": {
+			"value": "https://api.business.govt.nz/services/v2/companies-office/disclose-register/DisclosePublic"
+		}
+	}
+}

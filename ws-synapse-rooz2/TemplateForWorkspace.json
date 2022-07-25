@@ -1,0 +1,226 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "ws-synapse-rooz2"
+		},
+		"adls_for_deltalake_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adls_for_deltalake'"
+		},
+		"adls_for_deltalake_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dlssynapserooz.dfs.core.windows.net/"
+		},
+		"lnk_server_disclose_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.business.govt.nz/services/v2/companies-office/disclose-register/DisclosePublic"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/IngestDiscloseData')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy disclose offers",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "XmlSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "POST",
+									"additionalHeaders": {
+										"value": "@{concat('Authorization: Bearer ','7074d707c32a48b57e9e5f9b5897072d')}",
+										"type": "Expression"
+									},
+									"requestBody": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:get=\"http://data.business.govt.nz/services/FMCR/DisclosePublic/GetOfferPublic\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <get:GetOfferPublic>\n         <get:SchemaVersion>2.0</get:SchemaVersion>\n         <get:Request>\n            <get:OfferNumber>OFR12408</get:OfferNumber>\n         </get:Request>\n      </get:GetOfferPublic>\n   </soapenv:Body>\n</soapenv:Envelope>",
+									"requestTimeout": ""
+								},
+								"formatSettings": {
+									"type": "XmlReadSettings",
+									"validationMode": "none",
+									"namespaces": true
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_disclose",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_disclose_offers",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/ds_disclose')]",
+				"[concat(variables('workspaceId'), '/datasets/ds_disclose_offers')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_disclose')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lnk_server_disclose",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Xml",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/lnk_server_disclose')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ds_disclose_offers')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "adls_for_deltalake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "disclose_ingestion",
+						"fileSystem": "raw"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/adls_for_deltalake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/adls_for_deltalake')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('adls_for_deltalake_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('adls_for_deltalake_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/lnk_server_disclose')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('lnk_server_disclose_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous",
+					"authHeaders": {
+						"SOAPAction": {
+							"type": "SecureString",
+							"value": "**********"
+						},
+						"Content-Type": {
+							"type": "SecureString",
+							"value": "**********"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/1_explore_taxi_zone')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "nyc_taxi/discovery"
+				},
+				"content": {
+					"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://dlssynapserooz.dfs.core.windows.net/nyc-taxi-data/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true\n    ) AS [result]\n\n\n\n-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true,\n        FIELDTERMINATOR =',',\n        ROWTERMINATOR ='\\n'\n    ) AS [result]\n\n\nEXEC sp_describe_first_result_set N'\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK ''abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv'',\n        FORMAT = ''CSV'',\n        PARSER_VERSION = ''2.0'',\n        HEADER_ROW = true\n\n    ) AS [result]'\n\n\n-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true  ) \nWITH(\n\n     LocationID SMALLINT,\n     Borough varchar(15),\n     Zone VARCHAR (50),\n     service_zone VARCHAR(15)\n\n\n) AS [result]\n\n\nexec sp_describe_first_result_set N'SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK ''abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv'',\n        FORMAT = ''CSV'',\n        PARSER_VERSION = ''2.0'',\n        HEADER_ROW = true  ) \nWITH(\n\n     LocationID SMALLINT,\n     Borough varchar(15),\n     Zone VARCHAR (50),\n     service_zone VARCHAR(15)\n\n\n) AS [result]'\n\n\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-data@dlssynapserooz.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = true  ) \nWITH(\n\n     LocationID SMALLINT,\n     Borough varchar(15) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n     Zone VARCHAR (50) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n     service_zone VARCHAR(15) COLLATE Latin1_General_100_CI_AI_SC_UTF8\n\n) AS [result]\n\n\n\n\n\n\n\n\n\n\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/disclose get list of offers')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}
