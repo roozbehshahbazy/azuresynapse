@@ -5,6 +5,9 @@
 		"workspaceName": {
 			"value": "ws-synapse-rooz2"
 		},
+		"SQL_Sandbox_BIMLBD_connectionString": {
+			"value": ""
+		},
 		"adls_for_deltalake_accountKey": {
 			"value": ""
 		},
