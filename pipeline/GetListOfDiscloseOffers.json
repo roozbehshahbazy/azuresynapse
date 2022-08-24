@@ -21,7 +21,7 @@
 							"type": "HttpReadSettings",
 							"requestMethod": "POST",
 							"additionalHeaders": {
-								"value": "@{concat('Authorization: Bearer ','7074d707c32a48b57e9e5f9b5897072d')}",
+								"value": "@{concat('Authorization: Bearer ','4153bb2ef1c4a8889cebc90ecd371abd')}",
 								"type": "Expression"
 							},
 							"requestBody": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:get=\"http://data.business.govt.nz/services/FMCR/DisclosePublic/GetNewOrChangedOffersAndSchemes\">\n   <soapenv:Header/>\n   <soapenv:Body>\n      <get:GetNewOrChangedOffersAndSchemes>\n         <get:SchemaVersion>1.0</get:SchemaVersion>\n         <get:Request>\n            <get:StartDate>2022-06-19</get:StartDate>\n            <get:EndDate>2022-07-18</get:EndDate>\n            <get:EntityTypeList>\n               <get:EntityType>Offer</get:EntityType>\n               <get:EntityType>Scheme</get:EntityType>\n            </get:EntityTypeList>\n         </get:Request>\n      </get:GetNewOrChangedOffersAndSchemes>\n   </soapenv:Body>\n</soapenv:Envelope>",
